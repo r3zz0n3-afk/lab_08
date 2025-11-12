@@ -23,7 +23,7 @@ public class DeathNoteImpl implements DeathNote {
     @Override
     public String getDeathCause(final String name) {
         if (!isNameWritten(name)) {
-            throw new IllegalArgumentException();
+            throw new IllegalStateException("The name not written on notebook");
         } 
         return deathNote.get(name).getDeathCause();
     }
@@ -31,7 +31,7 @@ public class DeathNoteImpl implements DeathNote {
     @Override
     public String getDeathDetails(final String name) {
         if (!isNameWritten(name)) {
-            throw new IllegalArgumentException();
+            throw new IllegalStateException("The name not written on notebook");
         }
         return deathNote.get(name).getDetailsOfDeath();
     }
@@ -53,9 +53,9 @@ public class DeathNoteImpl implements DeathNote {
     @Override
     public boolean writeDeathCause(final String cause) {
         if (deathNote.isEmpty()) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("None name is wrtitten on notebook");
         } else if (cause == null) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("The cause can't be null");
         }
         InnerDeathNoteImpl newDeathInfo = deathNote.get(lastNameWritten).writeDeathCause(cause);
         if (!deathNote.get(lastNameWritten).equals(newDeathInfo)) {
@@ -68,9 +68,9 @@ public class DeathNoteImpl implements DeathNote {
     @Override
     public boolean writeDetails(final String details) {
         if (deathNote.isEmpty()) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("None name is wrtitten on notebook");
         } else if (details == null) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("The details can't be null");
         }
         InnerDeathNoteImpl newDeathInfo = deathNote.get(lastNameWritten).writeDeathDetails(details);
         if (!deathNote.get(lastNameWritten).equals(newDeathInfo)) {
@@ -83,37 +83,43 @@ public class DeathNoteImpl implements DeathNote {
     @Override
     public void writeName(final String name) {
         Objects.requireNonNull(name);
+        if (name.isEmpty()) {
+            return;
+        }
         lastNameWritten = name;
         deathNote.put(name, new InnerDeathNoteImpl());
     }
 
 private static class InnerDeathNoteImpl {
     
-        static final long INTERVAL_OF_DEATH = 40;
-        static final long INTERVAL_FOR_DETAILS = TimeUnit.SECONDS.toMillis(6);
+        static final int INTERVAL_OF_DEATH = 40;
+        static final long INTERVAL_FOR_DETAILS = TimeUnit.SECONDS.toMillis(6) + INTERVAL_OF_DEATH;
 
-        private long timeOfDeath;
-        private String causeOfDeath;
-        private String detailsOfDeath;
+        private final long timeOfDeath;
+        private final String causeOfDeath;
+        private final String detailsOfDeath;
 
         private InnerDeathNoteImpl(final String cause, final String details) {
             this.causeOfDeath = cause;
             this.detailsOfDeath = details;
-            this.timeOfDeath = System.currentTimeMillis();
+            timeOfDeath = System.currentTimeMillis();
         }
 
         InnerDeathNoteImpl() {
-            this("Heart attack", " "); //Deafault case
+            this("Heart attack", ""); //Deafault case
         }
 
-        public InnerDeathNoteImpl writeDeathCause(final String cause) {
-                return System.currentTimeMillis() > this.timeOfDeath + InnerDeathNoteImpl.INTERVAL_OF_DEATH 
-                ? new InnerDeathNoteImpl(cause, this.detailsOfDeath) : this;
+        public InnerDeathNoteImpl writeDeathCause(final String cause) {    
+            return System.currentTimeMillis() - timeOfDeath <=  INTERVAL_OF_DEATH 
+                ? new InnerDeathNoteImpl(cause, this.detailsOfDeath) 
+                : this;
         }
 
         public InnerDeathNoteImpl writeDeathDetails(final String deatails) {
-                return System.currentTimeMillis() > this.timeOfDeath + InnerDeathNoteImpl.INTERVAL_OF_DEATH + InnerDeathNoteImpl.INTERVAL_FOR_DETAILS 
-                ? new InnerDeathNoteImpl(this.causeOfDeath, deatails) : this;
+            
+            return System.currentTimeMillis() - timeOfDeath <= INTERVAL_FOR_DETAILS 
+                ? new InnerDeathNoteImpl(this.causeOfDeath, deatails) 
+                : this;
         }
 
         public String getDeathCause() {
