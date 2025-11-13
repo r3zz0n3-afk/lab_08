@@ -19,27 +19,27 @@ import it.unibo.deathnote.api.DeathNote;
 import it.unibo.deathnote.impl.DeathNoteImpl;
 
 class TestDeathNote {
-    
+
     private static final String LIGHT_YAGAMI = "Light Yagami";
     private static final String THANOS = "Thanos";
     private static final String DEATH_FOR_KARTING = "karting accident";
     private static final String DETAILS_DEATH = "ran for too long";
 
-    DeathNote testDeathNote;
+    private DeathNote deathNote;
 
     @BeforeEach
     void setUp() {
-        testDeathNote = new DeathNoteImpl();
+        deathNote = new DeathNoteImpl();
     }
 
     @Test
     void testGetterRules() {
 
-        for (var index : List.of(-1 , 0 , DeathNote.RULES.size() + 1)) {
+        for (final var index : List.of(-1, 0, deathNote.RULES.size() + 1)) {
             try { 
-                testDeathNote.getRule(index);
+                deathNote.getRule(index);
                 Assertions.fail("Return a rule that doesn't exsit");
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 assertNotNull(e.getMessage()); // Non-null message
                 assertFalse(e.getMessage().isBlank()); // Not a blank or empty message
             }
@@ -49,7 +49,7 @@ class TestDeathNote {
     @Test
     void testExistenceRules() {
 
-        for (String rule : DeathNote.RULES) {
+        for (final String rule : deathNote.RULES) {
 
             assertNotNull(rule); // the rule doesn't null
             assertFalse(rule.isBlank()); // the rule doesn't empty 
@@ -58,12 +58,12 @@ class TestDeathNote {
 
     @Test
     void testWritingName() {
-        assertFalse(testDeathNote.isNameWritten(LIGHT_YAGAMI));
-        testDeathNote.writeName(LIGHT_YAGAMI);
-        assumeTrue(testDeathNote.isNameWritten(LIGHT_YAGAMI));
-        assertFalse(testDeathNote.isNameWritten(THANOS));
-        testDeathNote.writeName("");
-        assertFalse(testDeathNote.isNameWritten(""));
+        assertFalse(deathNote.isNameWritten(LIGHT_YAGAMI));
+        deathNote.writeName(LIGHT_YAGAMI);
+        assumeTrue(deathNote.isNameWritten(LIGHT_YAGAMI));
+        assertFalse(deathNote.isNameWritten(THANOS));
+        deathNote.writeName("");
+        assertFalse(deathNote.isNameWritten(""));
     }
 
     @Test
@@ -74,20 +74,22 @@ class TestDeathNote {
         assertThrows(IllegalStateException.class, new Executable() {
            @Override
            public void execute() throws Throwable {
-                testDeathNote.writeDeathCause(LIGHT_YAGAMI);
+                deathNote.writeDeathCause(LIGHT_YAGAMI);
            } 
         });
-        testDeathNote.writeName(LIGHT_YAGAMI);
-        assertEquals("Heart attack", testDeathNote.getDeathCause(LIGHT_YAGAMI));
-        testDeathNote.writeName(THANOS);
-        assertTrue(testDeathNote.writeDeathCause(DEATH_FOR_KARTING));
-        assertEquals(DEATH_FOR_KARTING, testDeathNote.getDeathCause(THANOS));
-        
+        deathNote.writeName(LIGHT_YAGAMI);
+        assertEquals("Heart attack", deathNote.getDeathCause(LIGHT_YAGAMI));
+        deathNote.writeName(THANOS);
+        assertTrue(deathNote.writeDeathCause(DEATH_FOR_KARTING));
+        assertEquals(DEATH_FOR_KARTING, deathNote.getDeathCause(THANOS));
+
         try {
             Thread.sleep(sleepTime); 
-        } catch (InterruptedException e) {}
-        assertFalse(testDeathNote.writeDeathCause(changedCause));
-        assertNotEquals(changedCause, testDeathNote.getDeathCause(THANOS));
+        } catch (final InterruptedException e) {
+            Assertions.fail("The proces is arrested");
+        }
+        assertFalse(deathNote.writeDeathCause(changedCause));
+        assertNotEquals(changedCause, deathNote.getDeathCause(THANOS));
     }
 
     @Test
@@ -98,17 +100,19 @@ class TestDeathNote {
         assertThrows(IllegalStateException.class, new Executable() {
            @Override
            public void execute() throws Throwable {
-                testDeathNote.writeDeathCause(LIGHT_YAGAMI);
+                deathNote.writeDeathCause(LIGHT_YAGAMI);
            } 
         });
-        testDeathNote.writeName(LIGHT_YAGAMI);
-        assertTrue(testDeathNote.getDeathDetails(LIGHT_YAGAMI).isEmpty());
-        assertTrue(testDeathNote.writeDetails(DETAILS_DEATH));
+        deathNote.writeName(LIGHT_YAGAMI);
+        assertTrue(deathNote.getDeathDetails(LIGHT_YAGAMI).isEmpty());
+        assertTrue(deathNote.writeDetails(DETAILS_DEATH));
 
-        testDeathNote.writeName(THANOS);
+        deathNote.writeName(THANOS);
         try {
             Thread.sleep(sleepTime); 
-        } catch (InterruptedException e) {}
-        assertFalse(testDeathNote.writeDetails(changeDetails));
+        } catch (final InterruptedException e) {
+            Assertions.fail("The proces is arrested");
+        }
+        assertFalse(deathNote.writeDetails(changeDetails));
     }
 }

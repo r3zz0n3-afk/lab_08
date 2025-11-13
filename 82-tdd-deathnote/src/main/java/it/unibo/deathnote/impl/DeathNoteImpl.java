@@ -5,19 +5,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-
 import it.unibo.deathnote.api.DeathNote;
 
 /** 
- * Implemetation of deth note
+ * Implemetation of deth note.
  */
-public class DeathNoteImpl implements DeathNote {
+public final class DeathNoteImpl implements DeathNote {
 
-    private Map<String, InnerDeathNoteImpl> deathNote;
+    private Map<String, InnerDeathNoteImpl> deathNote; // NOPMD
     private String lastNameWritten;
 
+    /** 
+     * creation the deathnote.
+     */
     public DeathNoteImpl() {
-        deathNote = new HashMap<>();
+        deathNote = new HashMap<>(); 
     }
 
     @Override
@@ -38,10 +40,10 @@ public class DeathNoteImpl implements DeathNote {
 
     @Override
     public String getRule(final int ruleNumber) {
-        if (ruleNumber < 1 || ruleNumber > DeathNote.RULES.size()) {
+        if (ruleNumber < 1 || ruleNumber > RULES.size()) {
             throw new IllegalArgumentException("Index out of bound");
         }
-        return DeathNote.RULES.get(ruleNumber);
+        return RULES.get(ruleNumber);
     }
 
     @Override
@@ -57,7 +59,7 @@ public class DeathNoteImpl implements DeathNote {
         } else if (cause == null) {
             throw new IllegalStateException("The cause can't be null");
         }
-        InnerDeathNoteImpl newDeathInfo = deathNote.get(lastNameWritten).writeDeathCause(cause);
+        final InnerDeathNoteImpl newDeathInfo = deathNote.get(lastNameWritten).writeDeathCause(cause);
         if (!deathNote.get(lastNameWritten).equals(newDeathInfo)) {
             deathNote.put(lastNameWritten, newDeathInfo);
             return true;
@@ -72,7 +74,7 @@ public class DeathNoteImpl implements DeathNote {
         } else if (details == null) {
             throw new IllegalStateException("The details can't be null");
         }
-        InnerDeathNoteImpl newDeathInfo = deathNote.get(lastNameWritten).writeDeathDetails(details);
+       final InnerDeathNoteImpl newDeathInfo = deathNote.get(lastNameWritten).writeDeathDetails(details);
         if (!deathNote.get(lastNameWritten).equals(newDeathInfo)) {
             deathNote.put(lastNameWritten, newDeathInfo);
             return true;
@@ -90,8 +92,8 @@ public class DeathNoteImpl implements DeathNote {
         deathNote.put(name, new InnerDeathNoteImpl());
     }
 
-private static class InnerDeathNoteImpl {
-    
+    private static class InnerDeathNoteImpl {
+
         static final int INTERVAL_OF_DEATH = 40;
         static final long INTERVAL_FOR_DETAILS = TimeUnit.SECONDS.toMillis(6) + INTERVAL_OF_DEATH;
 
@@ -109,14 +111,13 @@ private static class InnerDeathNoteImpl {
             this("Heart attack", ""); //Deafault case
         }
 
-        public InnerDeathNoteImpl writeDeathCause(final String cause) {    
-            return System.currentTimeMillis() - timeOfDeath <=  INTERVAL_OF_DEATH 
+        public InnerDeathNoteImpl writeDeathCause(final String cause) {
+            return System.currentTimeMillis() - timeOfDeath <= INTERVAL_OF_DEATH
                 ? new InnerDeathNoteImpl(cause, this.detailsOfDeath) 
                 : this;
         }
 
         public InnerDeathNoteImpl writeDeathDetails(final String deatails) {
-            
             return System.currentTimeMillis() - timeOfDeath <= INTERVAL_FOR_DETAILS 
                 ? new InnerDeathNoteImpl(this.causeOfDeath, deatails) 
                 : this;

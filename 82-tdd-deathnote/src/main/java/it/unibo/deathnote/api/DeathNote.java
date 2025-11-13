@@ -121,7 +121,7 @@ public interface DeathNote {
      */
     String getDeathCause(String name);
 
-    /**NU
+    /**
      * Provides the details of the death of the person with the given name.
      *
      * @param name the name of the person whose death cause to return
