@@ -32,7 +32,7 @@ public final class DrawNumberControllerImpl implements DrawNumberController {
     public void addView(final DrawNumberView view) {
         Objects.requireNonNull(view, "Cannot set a null view");
         this.views.add(view);
-        if(view.getClass().equals(DrawNumberSwingView.class)) {
+        if (view.getClass().equals(DrawNumberSwingView.class)) {
             view.setController(this);
         }
         view.start();
@@ -58,7 +58,7 @@ public final class DrawNumberControllerImpl implements DrawNumberController {
          * should be paid to alive threads, as the application would continue to persist
          * until the last thread terminates.
          */
-        System.exit(0);
+        System.exit(0); 
     }
 
 }

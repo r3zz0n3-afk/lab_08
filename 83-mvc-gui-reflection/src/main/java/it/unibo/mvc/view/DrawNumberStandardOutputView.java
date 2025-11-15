@@ -4,7 +4,10 @@ import it.unibo.mvc.api.DrawNumberController;
 import it.unibo.mvc.api.DrawNumberView;
 import it.unibo.mvc.api.DrawResult;
 
-public final class DrawNumberStandardOutputView implements DrawNumberView  {
+/**
+ * View std output implementation, and is only output.
+ */
+public final class DrawNumberStandardOutputView implements DrawNumberView {
 
     @Override
     public void setController(final DrawNumberController observer) {

@@ -7,7 +7,8 @@ import it.unibo.mvc.api.DrawNumberController;
 import it.unibo.mvc.api.DrawNumberView;
 import it.unibo.mvc.controller.DrawNumberControllerImpl;
 import it.unibo.mvc.model.DrawNumberImpl;
-/* useless imports  
+
+/* useless imports
  import it.unibo.mvc.api.DrawNumber;
  import it.unibo.mvc.view.DrawNumberStandardOutputView;
  import it.unibo.mvc.view.DrawNumberSwingView;
@@ -35,19 +36,30 @@ public final class LaunchApp {
         final var model = new DrawNumberImpl();
         final DrawNumberController app = new DrawNumberControllerImpl(model);
         /* 
-        Implementation whitout Reflections
-        app.addView(new DrawNumberStandardOutputView());
-        app.addView(new DrawNumberSwingView());
-        app.addView(new DrawNumberSwingView());
-        */
-        final List<String> viewClassNme = List.of("it.unibo.mvc.view.DrawNumberStandardOutputView", "it.unibo.mvc.view.DrawNumberSwingView");
-        for (int i = 0; i < 3; i++) { 
-            for (final String viewType : viewClassNme) {
-                try{
+         Implementation whitout Reflections
+         app.addView(new DrawNumberStandardOutputView());
+         app.addView(new DrawNumberSwingView());
+         app.addView(new DrawNumberSwingView());
+         */
+
+        for (int i = 0; i < 3; i++) {
+            // CHECKSTYLE:OFF
+            for (final String viewType : List.of("it.unibo.mvc.view.DrawNumberStandardOutputView", "it.unibo.mvc.view.DrawNumberSwingView")) {
+                try {
                    final Class<?> viewClass = Class.forName(viewType);
                    final var costrutor = viewClass.getConstructor().newInstance();
-                    app.addView((DrawNumberView) costrutor);
-                } catch(Exception e) { //NOPMD
+                   app.addView((DrawNumberView) costrutor);
+                } catch (final ClassNotFoundException e) { // Chatch the all possible Exeptions
+                    e.printStackTrace(); //NOPMD
+                } catch (final NoSuchMethodException e) {
+                    e.printStackTrace(); //NOPMD
+                } catch (final InvocationTargetException e) {
+                    e.printStackTrace(); //NOPMD
+                } catch (final InstantiationException e) {
+                    e.printStackTrace(); //NOPMD
+                } catch (final IllegalAccessException e) {
+                    e.printStackTrace(); //NOPMD
+                } catch (final IllegalArgumentException e) {
                     e.printStackTrace(); //NOPMD
                 }
             }

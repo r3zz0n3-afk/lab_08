@@ -92,7 +92,7 @@ public final class DrawNumberSwingView implements DrawNumberView {
 
     @Override
     public void setController(final DrawNumberController observer) {
-        this.controller = observer;
+        this.controller = observer; 
     }
 
     @Override
